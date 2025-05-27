@@ -1,23 +1,21 @@
 import { portServer } from "@config/dotenv";
-import sequelize from "@config/sequelizeconfig";
+import { dbConnection } from "@share/db/sequelize/setup.db";
 import app from "app";
 
 const server = app.listen(portServer, async () => {
   try {
-    await sequelize.sync({ force: false });
-    console.log(`[✅] Conexión a la base de datos establecida correctamente.`);
-    console.log(`[🔗] Conexión a la base de datos: ${sequelize.getDatabaseName()}`);
-    console.log(`[📅] Sincronización de modelos completada.`);
+    await dbConnection.sync({ force: false })
+    console.log(`
+  [✅] Conexión a la base de datos establecida correctamente.
+  [🔗] Conexión a la base de datos: ${dbConnection.getDatabaseName()}
+  [🚀] ¡Servidor turístico en marcha!
+  [✅] Escuchando en el puerto ${portServer}
+  [🌐] Puedes usar la api de la aplicación en: http://localhost:${portServer}
+  [📅] ¡Listo para recibir visitantes!
+    `);
   } catch (error) {
-    console.error(`[❌] Error al conectar a la base de datos:`, error);
+    console.error(`[❌] ¡Ups! Ocurrió un error al iniciar el servidor:`, error);
   }
-
-  console.log(`[🚀] ¡Servidor turístico en marcha!`);
-  console.log(`[✅] Escuchando en el puerto ${portServer}`);
-  console.log(
-    `[🌐] Puedes usar la api de la aplicación en: http://localhost:${portServer}`
-  );
-  console.log(`[📅] ¡Listo para recibir visitantes!`);
 });
 
 server.on("error", (err: Error) => {
