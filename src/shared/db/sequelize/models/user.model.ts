@@ -8,6 +8,11 @@ import { DataTypes, Sequelize } from "sequelize";
  */
 export default (sequelize: Sequelize) =>  { 
   sequelize.define("User", {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -30,7 +35,8 @@ export default (sequelize: Sequelize) =>  {
       unique: true,
     },
     status: {
-      type: DataTypes.ENUM("activo", "inactivo"),
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
       allowNull: false,
     },
     role: {
