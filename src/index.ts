@@ -4,7 +4,7 @@ import app from "app";
 
 const server = app.listen(portServer, async () => {
   try {
-    await dbConnection.sync({ force: true })
+    await dbConnection.sync({ alter: true })
     console.log(`
   [✅] Conexión a la base de datos establecida correctamente.
   [🔗] Conexión a la base de datos: ${dbConnection.getDatabaseName()}
