@@ -7,4 +7,5 @@ export default interface IUserRepository {
   findUserById(id: string): Promise<User | null>;
   createGuide(idUser: string, guideData: Omit<Guide, 'id'>): Promise<Guide>;
   getGideUserById(id: string): Promise<Guide | null>;
+  updateUser(id: string, userData: Partial<Omit<User, 'id'>>): Promise<User>;
 }

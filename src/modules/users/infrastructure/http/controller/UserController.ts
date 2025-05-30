@@ -38,22 +38,19 @@ export default class UserController {
     }
   };
 
-  getUserWithGuide = async (
-    { params }: Request,
-    res: Response,
-    next: NextFunction,
-  ) => {
+  getUser = async ({ params }: Request, res: Response, next: NextFunction) => {
     const { id } = params;
+    console.log('id', id);
+    
     try {
-      const userWithGuide = await this.userServices.getUserWhitGuide(id);
+      const user = await this.userServices.getUser(id);
       res.status(200).json({
         message: 'User with guide retrieved successfully',
-        data: userWithGuide,
+        data: user,
       });
     } catch (err) {
       console.log(err);
       next(err);
     }
-    throw new Error('Method not implemented.');
   };
 }

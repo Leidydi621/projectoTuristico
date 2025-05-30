@@ -1,3 +1,4 @@
+import AppError from '@error/AppError';
 import Guide from '@modules/users/domain/entities/Guide';
 import User from '@modules/users/domain/entities/User';
 import IUserRepository from '@modules/users/domain/port/out/IUserRespository';
@@ -5,10 +6,16 @@ import { models } from '@share/db/sequelize/setup.db';
 
 export default class UserRepositoryImp implements IUserRepository {
   constructor() { }
+  async updateUser(id: string, userData: Partial<Omit<User, 'id'>>): Promise<User> {
+    const result = await models.User.update(userData, { where: { id }, returning: true });
+    if (!result[0] || !result[1][0]) 
+      throw new AppError('User not found', 404);
+    return User.fromPersistence(result[1][0].toJSON());
+  }
   
-  getGideUserById(id: string): Promise<Guide | null> {
-    return models.Guide.findOne({ where: { userId: id } })
-      .then(result => result ? Guide.fromPersistence(result.toJSON()) : null);
+  async getGideUserById(id: string): Promise<Guide | null> {
+    const result =  await models.Guide.findOne({ where: { userId: id } })
+    return result ? Guide.fromPersistence(result.toJSON()) : null;
   }
 
   async findUserById(id: string): Promise<User | null> {
