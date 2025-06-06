@@ -1,9 +1,8 @@
-import UserServiceImp from "@modules/users/application/service/UserServiceImp";
-import SequelizeUserRepositoryImp from "../../percistence/SequelizeUserRepositoryImp";
-import UserController from "./UserController";
+import UserServiceImp from '@modules/users/application/service/UserServiceImp';
+import UserRepositoryImp from '../../percistence/UserRepositoryImp';
+import UserController from './UserController';
 
-
-const userRepository = new SequelizeUserRepositoryImp();
+const userRepository = new UserRepositoryImp();
 const userServices = new UserServiceImp(userRepository);
 const userController = new UserController(userServices);
 
