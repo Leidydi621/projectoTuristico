@@ -20,7 +20,6 @@ export function defineOneToOne<
   alias: { fromSourceToTarget: string; fromTargetToSource: string }
 ) {
   sourceModel.hasOne(targetModel, {
-    foreignKey,
     as: alias.fromSourceToTarget,
   });
   targetModel.belongsTo(sourceModel, {

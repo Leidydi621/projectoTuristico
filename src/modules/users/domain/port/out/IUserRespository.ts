@@ -1,11 +1,14 @@
-import Guide from '../../entities/Guide';
-import User from '../../entities/User';
+import { Guide } from "../../entities/Guide";
+import { User } from "../../entities/User";
 
 export default interface IUserRepository {
-  createUser(userData: Omit<User, 'id'>): Promise<User>;
+  createUser(userData: User): Promise<User>;
+  createGuide(guideData: { user: User, gide: Guide }): Promise<Guide>;
+
   findUserByEmail(email: string): Promise<User | null>;
-  findUserById(id: string): Promise<User | null>;
-  createGuide(idUser: string, guideData: Omit<Guide, 'id'>): Promise<Guide>;
-  getGideUserById(id: string): Promise<Guide | null>;
-  updateUser(id: string, userData: Partial<Omit<User, 'id'>>): Promise<User>;
+
+  updateUser(id: string, userData: Partial<User>): Promise<void>;
+  updateGuide(id: string, guideData: Partial<Guide>): Promise<void>;
+
+  searchGuides(page: number, limit: number, name?: string, minRating?: number, languages?: string[], verified?: boolean): Promise<{ guides: Guide[]; total: number }>;
 }

@@ -1,4 +1,5 @@
 import AppError from '@error/AppError';
+import formatDetailsErrors from 'utils/formatDetailsErrors';
 import { z } from 'zod';
 
 export enum UserRole {
@@ -78,12 +79,12 @@ const userDtoEschema = z.object({
       required_error: UserCreateErrorMessages.EMAIL_REQUIRED,
     })
     .email(UserCreateErrorMessages.EMAIL),
-  status: z.boolean().default(true).optional(),
+  status: z.boolean().default(true),
   role: z
     .nativeEnum(UserRole, {
       invalid_type_error: UserCreateErrorMessages.ROLE_INVALID,
     })
-    .optional(),
+    .default(UserRole.TURISTA),
   secondName: z
     .string()
     .min(2, UserCreateErrorMessages.ERROR_LENGTH_MIN)
@@ -97,15 +98,16 @@ const userDtoEschema = z.object({
 });
 
 export type UserDto = z.infer<typeof userDtoEschema>;
-export function parseUserDto(data: unknown): UserDto {
-  const result = userDtoEschema.safeParse(data);
 
-  if (!result.success) {
-    const errorMessages = result.error.errors
-      .map(err => err.message)
-      .join(', ');
 
-    throw new AppError(`Validation failed: ${errorMessages}`, 400);
-  }
-  return result.data;
+export function userDto(input: any): UserDto {
+  const { success, data, error } = userDtoEschema.safeParse(input)
+  if (!success) throw new AppError("User Data is Invalid", 400, formatDetailsErrors(error.errors))
+  return data
+}
+
+export function userPartialDto(input: any): Partial<UserDto> {
+  const { success, data, error } = userDtoEschema.partial().safeParse(input)
+  if (!success) throw new AppError("User Data is Invalid", 400, formatDetailsErrors(error.errors))
+  return data
 }

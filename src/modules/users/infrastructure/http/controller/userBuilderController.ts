@@ -1,6 +1,6 @@
 import UserServiceImp from '@modules/users/application/service/UserServiceImp';
-import UserRepositoryImp from '../../percistence/UserRepositoryImp';
 import UserController from './UserController';
+import UserRepositoryImp from '../../percistence/UserRepositoryImp';
 
 const userRepository = new UserRepositoryImp();
 const userServices = new UserServiceImp(userRepository);

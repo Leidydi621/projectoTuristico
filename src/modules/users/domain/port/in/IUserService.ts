@@ -1,9 +1,14 @@
-import Guide, { IGuide } from '../../entities/Guide';
-import User from '../../entities/User';
+import { User } from "../../entities/User";
+import { Guide } from "../../entities/Guide";
+
 
 export default interface IUserService {
-  createUser(userData: Omit<User, 'id' | 'status' | 'role'>): Promise<User>;
-  createGuide(idUse: string, guideData: IGuide): Promise<Guide>;
-  getUser(id: string):Promise<User & { guide?: Guide }>;
+  createUser(userData: User): Promise<User>;
+  createGuide(guideData: { user: User, gide: Guide }): Promise<Guide>;
 
+  updateUser(id: string, userData: Partial<User>): Promise<void>;
+  updateGuide(id: string, guideData: Partial<Guide>): Promise<void>;
+
+  searchGuides(page: number, limit: number, name?: string, minRating?: number, languages?: string[], verified?: boolean): Promise<{ guides: Guide[]; total: number }>;
 }
+

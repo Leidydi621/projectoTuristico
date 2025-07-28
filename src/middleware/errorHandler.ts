@@ -1,6 +1,7 @@
 import AppError from '@error/AppError';
 import { AppErrorMsg } from '@error/AppErrorMsg';
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
+import errorResponse from 'utils/errorResponse';
 
 export default function errorHandler(
   err: Error,
@@ -9,16 +10,11 @@ export default function errorHandler(
   _next: NextFunction,
 ) {
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
-      name: err.name,
-      message: err.message,
-      isOperational: err.isOperational,
-      errorCode: err.errorCode,
-    });
-  } else {
-    return res.status(500).json({
-      message: AppErrorMsg.INTERNAL_SERVER_ERROR_MSG,
-      isOperational: false,
-    });
+    errorResponse(res, err.code, err.message, err.details)
+  }
+  else {
+    console.error(err)
+    errorResponse(res, 500, AppErrorMsg.INTERNAL_SERVER_ERROR_MSG)
   }
 }
+

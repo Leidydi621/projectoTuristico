@@ -1,35 +1,20 @@
-/**
- * Clase de error personalizada para manejar errores específicos de la aplicación.
- * Extiende la clase Error incorporada y agrega propiedades extra para contexto.
- */
 class AppError extends Error {
-  public readonly statusCode: number;
-  public readonly isOperational: boolean;
-  public readonly errorCode?: string;
-
+  public readonly code: number;
+  public readonly details: any;
   /**
    * @param message - Mensaje de error legible para humanos.
-   * @param isOperational - Verdadero si el error es esperado (por defecto: true).
+   * @param details : objeto con información extra del error op
    * @param errorCode - Código de error personalizado opcional para seguimiento interno.
    */
   constructor(
     message: string,
-    statusCode: number,
-    isOperational = true,
-    stackTrace?: string,
+    code: number,
+    details?: any,
+
   ) {
     super(message);
-    Object.setPrototypeOf(this, new.target.prototype);
-
-    this.name = this.constructor.name;
-    this.statusCode = statusCode;
-    this.isOperational = isOperational;
-
-    if (stackTrace) {
-      this.stack = stackTrace;
-    } else {
-      Error.captureStackTrace(this, this.constructor);
-    }
+    this.code = code;
+    this.details = details
   }
 }
 

@@ -1,10 +1,9 @@
 import { Router } from 'express';
+import catchAsync from 'utils/catchAsyn';
 import userController from '../controller/userBuilderController';
 
 const userRoutes = Router();
 
-userRoutes.get('/:id', userController.getUser);
-userRoutes.post('/', userController.createUser);
-userRoutes.post('/:idUser/guide', userController.createGuide);
+userRoutes.post('/', catchAsync(userController.createUser));
 
 export default userRoutes;

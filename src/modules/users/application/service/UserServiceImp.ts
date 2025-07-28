@@ -1,40 +1,37 @@
-import AppError from '@error/AppError';
-import Guide from '@modules/users/domain/entities/Guide';
-import User from '@modules/users/domain/entities/User';
-import IUserService from '@modules/users/domain/port/in/IUserService';
-import IUserRepository from '@modules/users/domain/port/out/IUserRespository';
+import AppError from "@error/AppError";
+import { Guide } from "@modules/users/domain/entities/Guide";
+import { User } from "@modules/users/domain/entities/User";
+import IUserService from "@modules/users/domain/port/in/IUserService";
+import IUserRepository from "@modules/users/domain/port/out/IUserRespository";
+
 
 export default class UserServiceImp implements IUserService {
-  constructor(private readonly userRepository: IUserRepository) {}
 
-  async getUser(id: string): Promise<User & { guide?: Guide }> {
-    const user = await this.userRepository.findUserById(id);
-    if (!user?.id) throw new AppError('User not found', 404);
+  constructor(private readonly userRepository: IUserRepository) { }
 
-    const guide = await this.userRepository.getGideUserById(user.id);
-    return { ...user, guide: guide ?? undefined };
+  searchGuides = async (page: number = 1, limit: number = 10, name?: string, minRating?: number, languages?: string[], verified?: boolean): Promise<{ guides: Guide[]; total: number; }> => {
+    return await this.userRepository.searchGuides(page, limit, name, minRating, languages, verified)
   }
 
-  async createGuide(idUser: string,guideData: Omit<Guide, 'id'>,): Promise<Guide> {
-    const user = await this.userRepository.findUserById(idUser);
-    if (!user) throw new AppError('User not found', 404);
+  createUser = async (userData: User): Promise<User> => {
+    const userDb = await this.userRepository.findUserByEmail(userData.email);
+    if (userDb) throw new AppError('User already exists', 409);
+    return await this.userRepository.createUser(userData);
+  };
 
-    const existingGuide = await this.userRepository.getGideUserById(idUser);
-    if (existingGuide) throw new AppError('User already has a guide', 409);
+  createGuide = async (guideData: { user: User, gide: Guide }): Promise<Guide> => {
+    const userDb = await this.userRepository.findUserByEmail(guideData.user.email);
+    if (userDb) throw new AppError('User already exists', 409);
+    return await this.userRepository.createGuide(guideData);
+  };
 
-    await this.userRepository.updateUser(idUser, { ...user, role: 'guide' });
-    const guide = Guide.create(guideData);
+  updateUser = async (id: string, userData: Partial<User>): Promise<void> => {
+    return await this.userRepository.updateUser(id, userData)
+  };
 
-    return this.userRepository.createGuide(idUser, guide);
-  }
+  updateGuide = async (id: string, guideData: Partial<Guide>): Promise<void> => {
+    return await this.userRepository.updateGuide(id, guideData)
+  };
 
-  async createUser(userData: Omit<User, 'id'>): Promise<User> {
-    const existingUser = await this.userRepository.findUserByEmail(
-      userData.email,
-    );
-    if (existingUser) throw new AppError('User already exists in system', 409);
 
-    const user = User.create(userData);
-    return this.userRepository.createUser(user);
-  }
 }

@@ -1,4 +1,5 @@
 import AppError from '@error/AppError';
+import formatDetailsErrors from 'utils/formatDetailsErrors';
 import { z } from 'zod';
 
 enum VerifiedStatus {
@@ -8,7 +9,7 @@ enum VerifiedStatus {
 
 const guideSchema = z.object({
   contactPhone: z.string({
-    required_error:"El número de contacto es obligatorio",
+    required_error: "El número de contacto es obligatorio",
   }).regex(/^\d+$/, 'Solo números permitidos'),
   description: z
     .string()
@@ -20,20 +21,23 @@ const guideSchema = z.object({
   spokenLanguages: z.array(z.string({
     required_error: "El campo de idiomas hablados es obligatorio",
   })),
-  verifiedStatus: z.nativeEnum(VerifiedStatus).optional(),
-  averageRating: z.number().optional(),
-  totalReviews: z.number().optional(),
-  isAvailable: z.boolean().optional(),
+  verifiedStatus: z.nativeEnum(VerifiedStatus).optional().default(VerifiedStatus.pending),
+  averageRating: z.number().optional().default(5),
+  totalReviews: z.number().optional().default(0),
+  isAvailable: z.boolean().optional().default(true),
   id: z.string().optional(),
 });
 
-export type GuideDTO = z.infer<typeof guideSchema>;
+export type GuideDto = z.infer<typeof guideSchema>;
 
-export function parseGuideDTO(data: unknown): GuideDTO {
-  const result = guideSchema.safeParse(data);
-  if (!result.success) {
-    const errorMessages = result.error.errors.map(err => err.message).join(', ');
-    throw new AppError(`Validation failed: ${errorMessages}`, 400);
-  }
-  return result.data;
+export function guideDto(input: any): GuideDto {
+  const { success, data, error } = guideSchema.safeParse(input)
+  if (!success) throw new AppError("User Data is Invalid", 400, formatDetailsErrors(error.errors))
+  return data
+}
+
+export function guidePartialDto(input: any): Partial<GuideDto> {
+  const { success, data, error } = guideSchema.partial().safeParse(input)
+  if (!success) throw new AppError("User Data is Invalid", 400, formatDetailsErrors(error.errors))
+  return data
 }

@@ -7,7 +7,6 @@ const server = app.listen(portServer, async () => {
     await dbConnection.sync({ force: false })
     console.log(`
   [✅] Conexión a la base de datos establecida correctamente.
-  [🔗] Conexión a la base de datos: ${dbConnection.getDatabaseName()}
   [🚀] ¡Servidor turístico en marcha!
   [✅] Escuchando en el puerto ${portServer}
   [🌐] Puedes usar la api de la aplicación en: http://localhost:${portServer}
