@@ -1,4 +1,5 @@
 import AppError from "@error/AppError";
+import { Guide } from "@modules/users/domain/entities/Guide";
 import { User } from "@modules/users/domain/entities/User";
 import IUserService from "@modules/users/domain/port/in/IUserService";
 import IUserRepository from "@modules/users/domain/port/out/IUserRespository";
@@ -6,12 +7,31 @@ import IUserRepository from "@modules/users/domain/port/out/IUserRespository";
 
 export default class UserServiceImp implements IUserService {
 
-  constructor(public readonly userRepository: IUserRepository) { }
+  constructor(private readonly userRepository: IUserRepository) { }
 
-  async createUser(userData: Omit<User, "id">): Promise<User> {
-    if (await this.userRepository.findUserByEmail(userData.email))
-      throw new AppError("User already exists in system", 409);
-    return await this.userRepository.createUser(userData);
+  searchGuides = async (page: number = 1, limit: number = 10, name?: string, minRating?: number, languages?: string[], verified?: boolean): Promise<{ guides: Guide[]; total: number; }> => {
+    return await this.userRepository.searchGuides(page, limit, name, minRating, languages, verified)
   }
+
+  createUser = async (userData: User): Promise<User> => {
+    const userDb = await this.userRepository.findUserByEmail(userData.email);
+    if (userDb) throw new AppError('User already exists', 409);
+    return await this.userRepository.createUser(userData);
+  };
+
+  createGuide = async (guideData: { user: User, gide: Guide }): Promise<Guide> => {
+    const userDb = await this.userRepository.findUserByEmail(guideData.user.email);
+    if (userDb) throw new AppError('User already exists', 409);
+    return await this.userRepository.createGuide(guideData);
+  };
+
+  updateUser = async (id: string, userData: Partial<User>): Promise<void> => {
+    return await this.userRepository.updateUser(id, userData)
+  };
+
+  updateGuide = async (id: string, guideData: Partial<Guide>): Promise<void> => {
+    return await this.userRepository.updateGuide(id, guideData)
+  };
+
 
 }
