@@ -4,7 +4,7 @@ export interface User {
   firstName: string;
   lastName: string;
   secondLastName: string;
-  fotoUrlPerfil: string;
+  fotoUrlPerfil?: string;
   email: string;
   role?: RoleUser;
   status?: boolean;
