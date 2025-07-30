@@ -6,7 +6,7 @@ import { DataTypes, Sequelize } from "sequelize";
  * @param {Sequelize} sequelize - The Sequelize instance to define the model on.
 
  */
-export default (sequelize: Sequelize) =>  { 
+export default (sequelize: Sequelize) => {
   sequelize.define("User", {
     id: {
       type: DataTypes.UUID,
@@ -33,6 +33,10 @@ export default (sequelize: Sequelize) =>  {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     status: {
       type: DataTypes.BOOLEAN,

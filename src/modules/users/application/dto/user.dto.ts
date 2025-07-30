@@ -32,6 +32,7 @@ export enum UserCreateErrorMessages {
   ROLE_REQUIRED = 'Role is required',
 
   ROLE_INVALID = 'Role must be one of the predefined values',
+  PASSWORD_INVALID = 'The password is invalid, don´t have required feature'
 }
 
 const userDtoEschema = z.object({
@@ -64,7 +65,7 @@ const userDtoEschema = z.object({
     .regex(
       /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s'-]+$/,
       UserCreateErrorMessages.SECOND_LAST_NAME_REGEX,
-    ),
+    ).optional(),
   fotoUrlPerfil: z
     .string({
       required_error: UserCreateErrorMessages.FOTO_URL_PERFIL_REQUIRED,
@@ -73,7 +74,7 @@ const userDtoEschema = z.object({
     .regex(
       /\.(jpg|jpeg|png|gif|bmp|webp)$/i,
       UserCreateErrorMessages.FOTO_URL_PERFIL_IMAGE,
-    ),
+    ).optional(),
   email: z
     .string({
       required_error: UserCreateErrorMessages.EMAIL_REQUIRED,
@@ -95,6 +96,7 @@ const userDtoEschema = z.object({
     )
     .optional(),
   id: z.string().optional(),
+  password: z.string().nonempty().regex(/^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/, UserCreateErrorMessages.PASSWORD_INVALID)
 });
 
 export type UserDto = z.infer<typeof userDtoEschema>;
