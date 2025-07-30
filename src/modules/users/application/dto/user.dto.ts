@@ -32,7 +32,7 @@ export enum UserCreateErrorMessages {
   ROLE_REQUIRED = 'Role is required',
 
   ROLE_INVALID = 'Role must be one of the predefined values',
-  PASSWORD_INVALID = 'The password is invalid, don´t have required feature'
+  PASSWORD_INVALID = "Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character"
 }
 
 const userDtoEschema = z.object({

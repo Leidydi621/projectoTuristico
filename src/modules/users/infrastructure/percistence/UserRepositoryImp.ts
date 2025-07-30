@@ -12,12 +12,12 @@ export default class UserRepositoryImp implements IUserRepository {
     return (await models.User.findOne({ where: { email } }))?.dataValues
   }
 
-  async createUser(userData: User): Promise<User> {
-    return (await models.User.create({ ...userData })).dataValues
+  async createUser(userData: User): Promise<void> {
+    await models.User.create({ ...userData })
   }
 
   // TODO: IMPLEMENTAR ESTA FUNCION CREATE GUIDE
-  createGuide = async (guideData: { user: User; gide: Guide; }): Promise<Guide> => {
+  createGuide = async (guideData: { user: User; gide: Guide; }): Promise<void> => {
     throw new Error('Method not implemented.');
   }
 
