@@ -15,6 +15,8 @@ const dbPort = process.env['DB_PORT']!;
 const dbName = process.env['DB_NAME']!;
 const dbDialect = process.env['DB_DIALECT']!;
 const portServer = process.env['SERVER_PORT']!;
+const secretToken = process.env["JWT_SECRET"]!;
+const nodeEnv = process.env["NODE_ENV"]!;
 
 if (
   !dbUser ||
@@ -23,9 +25,11 @@ if (
   !dbPort ||
   !dbName ||
   !dbDialect ||
-  !portServer
+  !portServer ||
+  !secretToken ||
+  !nodeEnv
 ) {
   throw new AppError(AppErrorMsg.CONFIG_ENV_NOT_FOUND_MSG, 500, true);
 }
 
-export { dbUser, dbPassword, dbHost, dbPort, dbName, dbDialect, portServer };
+export { dbUser, dbPassword, dbHost, dbPort, dbName, dbDialect, portServer, secretToken, nodeEnv };

@@ -3,6 +3,7 @@ import { Guide } from "@modules/users/domain/entities/Guide";
 import { User } from "@modules/users/domain/entities/User";
 import IUserService from "@modules/users/domain/port/in/IUserService";
 import IUserRepository from "@modules/users/domain/port/out/IUserRespository";
+import { hashPassword } from "utils/passwordHashing";
 
 
 export default class UserServiceImp implements IUserService {
@@ -13,16 +14,16 @@ export default class UserServiceImp implements IUserService {
     return await this.userRepository.searchGuides(page, limit, name, minRating, languages, verified)
   }
 
-  createUser = async (userData: User): Promise<User> => {
+  createUser = async (userData: User): Promise<void> => {
     const userDb = await this.userRepository.findUserByEmail(userData.email);
     if (userDb) throw new AppError('User already exists', 409);
-    return await this.userRepository.createUser(userData);
+    await this.userRepository.createUser({ ...userData, password: await hashPassword(userData.password) });
   };
 
-  createGuide = async (guideData: { user: User, gide: Guide }): Promise<Guide> => {
+  createGuide = async (guideData: { user: User, gide: Guide }): Promise<void> => {
     const userDb = await this.userRepository.findUserByEmail(guideData.user.email);
     if (userDb) throw new AppError('User already exists', 409);
-    return await this.userRepository.createGuide(guideData);
+    await this.userRepository.createGuide(guideData);
   };
 
   updateUser = async (id: string, userData: Partial<User>): Promise<void> => {
