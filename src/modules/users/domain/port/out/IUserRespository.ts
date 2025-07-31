@@ -3,7 +3,7 @@ import { User } from "../../entities/User";
 
 export default interface IUserRepository {
   createUser(userData: User): Promise<void>;
-  createGuide(guideData: { user: User, gide: Guide }): Promise<void>;
+  createGuide(guideData: { user: User, guide: Guide }): Promise<void>;
 
   findUserByEmail(email: string): Promise<User | null>;
 

@@ -9,7 +9,7 @@ export enum UserRole {
   ADMIN_COP = 'admin-cop',
 }
 
-export enum UserCreateErrorMessages {
+enum UserCreateErrorMessages {
   ERROR_LENGTH_MIN = 'Must be at least 2 characters',
   ERROR_LENGTH_MAX = 'Must not exceed 50 characters',
 
