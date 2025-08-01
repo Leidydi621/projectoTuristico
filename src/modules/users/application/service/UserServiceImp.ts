@@ -15,15 +15,18 @@ export default class UserServiceImp implements IUserService {
   }
 
   createUser = async (userData: User): Promise<void> => {
-    const userDb = await this.userRepository.findUserByEmail(userData.email);
-    if (userDb) throw new AppError('User already exists', 409);
+    await this.alreadyExistsUser(userData);
     await this.userRepository.createUser({ ...userData, password: await hashPassword(userData.password) });
   };
 
-  createGuide = async (guideData: { user: User, gide: Guide }): Promise<void> => {
-    const userDb = await this.userRepository.findUserByEmail(guideData.user.email);
-    if (userDb) throw new AppError('User already exists', 409);
-    await this.userRepository.createGuide(guideData);
+  createGuide = async (guideData: { user: User, guide: Guide }): Promise<void> => {
+    await this.alreadyExistsUser(guideData.user);
+
+    await this.userRepository.createGuide({
+      user: {
+        ...guideData.user, password: await hashPassword(guideData.user.password)
+      }, guide: guideData.guide
+    });
   };
 
   updateUser = async (id: string, userData: Partial<User>): Promise<void> => {
@@ -35,4 +38,8 @@ export default class UserServiceImp implements IUserService {
   };
 
 
+  private async alreadyExistsUser(userData: User) {
+    const userDb = await this.userRepository.findUserByEmail(userData.email);
+    if (userDb) throw new AppError('User already exists', 409);
+  }
 }

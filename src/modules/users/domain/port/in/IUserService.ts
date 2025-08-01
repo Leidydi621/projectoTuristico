@@ -4,7 +4,7 @@ import { Guide } from "../../entities/Guide";
 
 export default interface IUserService {
   createUser(userData: User): Promise<void>;
-  createGuide(guideData: { user: User, gide: Guide }): Promise<void>;
+  createGuide(guideData: { user: User, guide: Guide }): Promise<void>;
 
   updateUser(id: string, userData: Partial<User>): Promise<void>;
   updateGuide(id: string, guideData: Partial<Guide>): Promise<void>;

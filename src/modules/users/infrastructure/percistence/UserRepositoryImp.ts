@@ -1,4 +1,5 @@
 
+import { UserRole } from '@modules/users/application/dto/user.dto';
 import { Guide } from '@modules/users/domain/entities/Guide';
 import { User } from '@modules/users/domain/entities/User';
 import IUserRepository from '@modules/users/domain/port/out/IUserRespository';
@@ -17,8 +18,16 @@ export default class UserRepositoryImp implements IUserRepository {
   }
 
   // TODO: IMPLEMENTAR ESTA FUNCION CREATE GUIDE
-  createGuide = async (guideData: { user: User; gide: Guide; }): Promise<void> => {
-    throw new Error('Method not implemented.');
+
+  createGuide = async (guideData: { user: User; guide: Guide; }): Promise<void> => {
+    const { user, guide } = guideData;
+    await models.User.create({
+      ...user,
+      role: UserRole.GUIDE,
+      guide: { ...guide },
+    }, {
+      include: ["guide"]
+    });
   }
 
   findUserByEmailUserByEmail = async (email: string): Promise<User | null> => {
